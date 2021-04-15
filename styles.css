@@ -1,0 +1,11 @@
+#book-display {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.book-card {
+    border: 2px solid black;
+    margin: 1px;
+    padding: 0 1em;
+}
