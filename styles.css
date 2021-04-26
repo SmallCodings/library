@@ -8,4 +8,9 @@
     border: 2px solid black;
     margin: 1px;
     padding: 0 1em;
+    width: 150px;
+}
+
+#new-book-button {
+    margin-top: 10px;
 }
