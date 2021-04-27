@@ -14,3 +14,9 @@
 #new-book-button {
     margin-top: 10px;
 }
+
+.remove-button {
+    width: 75px;
+    height: 20px;
+    margin-bottom: 10px;
+}

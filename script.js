@@ -1,10 +1,18 @@
 let myLibrary = [];
+let myLibraryCopy = []; // Used when loading page to remove books already displayed
+let libraryID = 0;
 
 function Book(title, author, pages, read) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.read = read;
+    this.libraryID = libraryID;
+    libraryID++;
+
+    this.remove = function(id) {
+        removeBookFromLibrary(id);
+    }
 }
 
 //delete this, just a test
@@ -12,27 +20,49 @@ let testbook = new Book('hello', 'no', 150, true);
 let testbook2 = new Book('hello2', 'no2', 152, false);
 myLibrary.push(testbook);
 myLibrary.push(testbook2);
-addBookToLibrary('hello4', 'no43', 120, false);
 //delete this, just a test
 
 function addBookToLibrary(name, author, pages, read) {
     let book = new Book(name, author, pages, read);
     myLibrary.push(book);
+    myLibraryCopy.push(book);
+    displayBookSelection();
+}
+
+function removeBookFromLibrary(id) {
+    myLibrary.splice(id, id+1);
+
+    document.querySelectorAll('.book-card').forEach(e => e.remove());
+    createLibraryCopy();
+    displayBookSelection();
+}
+
+function createLibraryCopy() {
+    for(let i = 0; i < myLibrary.length; i++) {
+        myLibraryCopy.push(myLibrary[i]);
+    }
 }
 
 function displayBookSelection() {
     const display = document.querySelector("#book-display");
-    for(let i = 0; i < myLibrary.length; i++) {
+    for(let i = 0; i < myLibraryCopy.length; i++) {
         const bookDisplay = document.createElement("div");
         bookDisplay.classList.add("book-card");
 
         display.appendChild(bookDisplay);
 
-        addTitle(bookDisplay, myLibrary[i]);
-        addAuthor(bookDisplay, myLibrary[i]);
-        addPages(bookDisplay, myLibrary[i]);
-        addRead(bookDisplay, myLibrary[i]);
+        addTitle(bookDisplay, myLibraryCopy[i]);
+        addAuthor(bookDisplay, myLibraryCopy[i]);
+        addPages(bookDisplay, myLibraryCopy[i]);
+        addRead(bookDisplay, myLibraryCopy[i]);
+        const removeButton = document.createElement("button");
+        removeButton.classList.add("remove-button");
+        removeButton.id = myLibraryCopy[i].libraryID;
+        removeButton.textContent = "Remove";
+        removeListener(removeButton);
+        bookDisplay.appendChild(removeButton);
     }
+    myLibraryCopy = [];
 }
 
 function addTitle(bookDisplay, book) {
@@ -65,9 +95,42 @@ function addRead(bookDisplay, book) {
 
 function buttonListener() {
     const newBookButton = document.querySelector('#new-book-button');
-    newBookButton.onclick = () => alert("Hello World");
+    newBookButton.onclick = () => getBookInformation();
+}
+
+function removeListener(button) {
+    button.onclick = () => findBook(button);
+}
+
+function findBook(button) {
+    for(let i = 0; i < myLibrary.length; i++) {
+        if(myLibrary[i].libraryID == button.id) {
+            myLibrary[i].remove(i);
+        }
+    }
+}
+
+function getBookInformation() {
+    let bookName = window.prompt("Enter book name");
+    if(bookName == "" || bookName == null) {
+        return;
+    }
+    let bookAuthor = window.prompt("Enter book author");
+    if(bookAuthor == "" || bookAuthor == null) {
+        return;
+    }
+    let bookPages = window.prompt("Enter book pages");
+    if(bookPages == "" || bookPages == null) {
+        return;
+    }
+    let bookRead = confirm("Has the book been read?");
+    let confirmed = confirm("Is this okay: Name("+bookName+") - Author("+bookAuthor+") - Pages("+bookPages+") - Read("+bookRead+")");
+    if(confirmed == true) {
+        addBookToLibrary(bookName, bookAuthor, bookPages, bookRead);
+    }
 }
 
 buttonListener();
+createLibraryCopy();
 displayBookSelection();
 
