@@ -9,10 +9,15 @@ function Book(title, author, pages, read) {
     this.read = read;
     this.libraryID = libraryID;
     libraryID++;
+}
 
-    this.remove = function(id) {
-        removeBookFromLibrary(id);
-    }
+Book.prototype.remove = function(id) {
+    removeBookFromLibrary(id);
+}
+
+Book.prototype.changeRead = function() {
+    this.read = !this.read;
+    updateBookSelection();
 }
 
 //delete this, just a test
@@ -32,15 +37,19 @@ function addBookToLibrary(name, author, pages, read) {
 function removeBookFromLibrary(id) {
     myLibrary.splice(id, id+1);
 
-    document.querySelectorAll('.book-card').forEach(e => e.remove());
-    createLibraryCopy();
-    displayBookSelection();
+    updateBookSelection();
 }
 
 function createLibraryCopy() {
     for(let i = 0; i < myLibrary.length; i++) {
         myLibraryCopy.push(myLibrary[i]);
     }
+}
+
+function updateBookSelection() {
+    document.querySelectorAll('.book-card').forEach(e => e.remove());
+    createLibraryCopy();
+    displayBookSelection();
 }
 
 function displayBookSelection() {
@@ -55,12 +64,8 @@ function displayBookSelection() {
         addAuthor(bookDisplay, myLibraryCopy[i]);
         addPages(bookDisplay, myLibraryCopy[i]);
         addRead(bookDisplay, myLibraryCopy[i]);
-        const removeButton = document.createElement("button");
-        removeButton.classList.add("remove-button");
-        removeButton.id = myLibraryCopy[i].libraryID;
-        removeButton.textContent = "Remove";
-        removeListener(removeButton);
-        bookDisplay.appendChild(removeButton);
+        addRemoveButton(bookDisplay, i);
+        addReadButton(bookDisplay, i);
     }
     myLibraryCopy = [];
 }
@@ -91,6 +96,25 @@ function addRead(bookDisplay, book) {
     const contentRead = document.createTextNode("Has been read: " + book.read);
     contentDisplay.appendChild(contentRead);
     bookDisplay.appendChild(contentDisplay);
+    book.readDisplay = contentRead;
+}
+
+function addRemoveButton(bookDisplay, i) {
+    const removeButton = document.createElement("button");
+    removeButton.classList.add("remove-button");
+    removeButton.id = myLibraryCopy[i].libraryID;
+    removeButton.textContent = "Remove";
+    removeListener(removeButton);
+    bookDisplay.appendChild(removeButton);
+}
+
+function addReadButton(bookDisplay, i) {
+    const readButton = document.createElement("button");
+    readButton.classList.add("remove-button");
+    readButton.id = myLibraryCopy[i].libraryID;
+    readButton.textContent = "Read";
+    readListener(readButton);
+    bookDisplay.appendChild(readButton);
 }
 
 function buttonListener() {
@@ -99,13 +123,25 @@ function buttonListener() {
 }
 
 function removeListener(button) {
-    button.onclick = () => findBook(button);
+    button.onclick = () => removeBook(button);
 }
 
-function findBook(button) {
+function readListener(button) {
+    button.onclick = () => changeBookRead(button);
+}
+
+function removeBook(button) {
     for(let i = 0; i < myLibrary.length; i++) {
         if(myLibrary[i].libraryID == button.id) {
             myLibrary[i].remove(i);
+        }
+    }
+}
+
+function changeBookRead(button) {
+    for(let i = 0; i < myLibrary.length; i++) {
+        if(myLibrary[i].libraryID == button.id) {
+            myLibrary[i].changeRead();
         }
     }
 }
