@@ -21,10 +21,10 @@ Book.prototype.changeRead = function() {
 }
 
 //delete this, just a test
-let testbook = new Book('hello', 'no', 150, true);
-let testbook2 = new Book('hello2', 'no2', 152, false);
-myLibrary.push(testbook);
-myLibrary.push(testbook2);
+//let testbook = new Book('hello', 'no', 150, true);
+//let testbook2 = new Book('hello2', 'no2', 152, false);
+//myLibrary.push(testbook);
+//myLibrary.push(testbook2);
 //delete this, just a test
 
 function addBookToLibrary(name, author, pages, read) {
